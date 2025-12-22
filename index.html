@@ -3,246 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fernando Guzman | Creative Technologist</title>
+    <title>Fernando Guzman | Visual Intelligence</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. BASE SETUP --- */
+        /* --- 1. THE CANVAS (The Art) --- */
         :root {
-            --text: #ffffff;
-            --overlay: rgba(0,0,0,0.4);
+            --bg-color: #f8f6f2; /* Creamy Art Paper */
+            --text-main: #1a1a1a;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
-            background: #050505;
-            color: var(--text);
-            font-family: 'Syne', sans-serif; /* Modern, wide sans-serif */
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Cormorant Garamond', serif;
             overflow-x: hidden;
-            cursor: none; /* We will use a custom artistic cursor */
         }
 
-        /* --- 2. THE ART CANVAS --- */
-        #art-canvas {
+        #fluid-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
+            /* THE MAGIC: This blur blends the shapes into a fluid gradient */
+            filter: blur(60px); 
+            opacity: 0.8;
         }
 
-        /* --- 3. CUSTOM CURSOR --- */
-        #cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 20px;
-            border: 2px solid white;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            mix-blend-mode: difference; /* Inverts colors over the background */
-            transition: width 0.3s, height 0.3s;
-        }
-
-        /* --- 4. LAYOUT & TYPOGRAPHY --- */
+        /* --- 2. LAYOUT & UI --- */
         main {
             position: relative;
-            z-index: 2;
-            padding: 0 5%;
+            z-index: 10;
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 40px;
         }
 
-        section {
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        h1 {
-            font-family: 'Playfair Display', serif; /* Elegant serif */
-            font-size: clamp(4rem, 10vw, 8rem);
-            line-height: 0.9;
-            font-style: italic;
-            mix-blend-mode: overlay; /* Blends text into the colorful background */
-            opacity: 0.9;
-        }
-
-        h2 {
-            font-size: 3rem;
-            margin-bottom: 40px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: -1px;
-        }
-
-        p.bio {
-            font-size: 1.5rem;
-            max-width: 600px;
-            line-height: 1.6;
-            margin-top: 20px;
-            font-family: 'Playfair Display', serif;
-        }
-
-        /* --- 5. PROJECT CARDS (Clean & Functional) --- */
-        .project-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0;
-        }
-
-        .project-item {
+        /* Header Navigation */
+        nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 40px 0;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s ease;
-            position: relative;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        .project-item:hover {
-            padding-left: 20px;
-            background: rgba(255,255,255,0.05);
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        .project-title {
+        h1 {
+            font-size: clamp(4rem, 8vw, 7rem);
+            font-weight: 300;
+            line-height: 0.9;
+            margin: 0;
+            mix-blend-mode: multiply; /* Text interacts with background colors */
+        }
+        
+        .hero p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            margin-top: 30px;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        /* --- 3. PROJECT "SCULPTURES" --- */
+        .project-section {
+            padding: 100px 0;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px); /* Frosted glass on light mode */
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 50px;
+            margin-bottom: 60px;
+            border-radius: 20px;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        .project-card:hover {
+            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .project-info h2 {
             font-size: 2.5rem;
-            font-weight: 700;
+            margin: 0 0 15px 0;
+            font-weight: 400;
         }
 
-        .project-tags {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            color: #aaa;
+        .project-tech {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #555;
+            margin-bottom: 20px;
+            display: block;
         }
 
-        /* --- 6. UTILITY LINKS --- */
-        .social-link {
-            font-size: 1.5rem;
-            color: #fff;
+        .btn-link {
+            display: inline-block;
             text-decoration: none;
-            margin-right: 30px;
-            border-bottom: 1px solid transparent;
+            color: #1a1a1a;
+            border-bottom: 1px solid #1a1a1a;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            padding-bottom: 5px;
             transition: 0.3s;
         }
-        .social-link:hover {
-            border-bottom: 1px solid #fff;
-            font-style: italic;
+        .btn-link:hover { padding-bottom: 2px; border-bottom: 2px solid #000; }
+
+        /* Abstract geometric shape on right of card */
+        .shape-icon {
+            font-size: 4rem;
+            opacity: 0.2;
         }
 
-        /* Mobile adjustments */
         @media (max-width: 768px) {
-            .project-item { flex-direction: column; align-items: flex-start; }
-            .project-tags { margin-top: 10px; }
-            #cursor { display: none; } /* Hide custom cursor on touch */
-            body { cursor: auto; }
+            .project-card { flex-direction: column; align-items: flex-start; }
+            .shape-icon { display: none; }
         }
+
     </style>
 </head>
 <body>
 
-    <canvas id="art-canvas"></canvas>
-    
-    <div id="cursor"></div>
+    <canvas id="fluid-canvas"></canvas>
 
     <main>
-        <section>
-            <p style="text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;">Portfolio 2024</p>
-            <h1>Fernando<br>Guzman</h1>
-            <p class="bio">
-                Computer Science student crafting intelligence from code. 
-                Merging logic with <span style="font-style:italic;">aesthetic chaos</span>.
-            </p>
+        <nav>
+            <span>Fernando Guzman</span>
+            <span>Based in TX</span>
+        </nav>
+
+        <section class="hero">
+            <h1>Art in<br>Algorithms.</h1>
+            <p>I build computational systems that feel human. <br>Specializing in AI, Simulation, and Creative Code.</p>
         </section>
 
-        <section>
-            <h2>Selected Works</h2>
-            <div class="project-list">
-                
-                <a href="https://github.com/txfg" class="project-item" style="text-decoration: none; color: white;">
-                    <div>
-                        <div class="project-title">Neural Simulation</div>
-                        <p style="opacity: 0.7; margin-top: 5px;">Reinforcement Learning Environment</p>
-                    </div>
-                    <div class="project-tags">Python / TensorFlow / Math</div>
-                </a>
+        <section class="project-section">
+            
+            <div class="project-card">
+                <div class="project-info">
+                    <span class="project-tech">Python / Neural Networks</span>
+                    <h2>Emergent Behavior Sim</h2>
+                    <p style="margin-bottom: 20px; color: #444;">A study in reinforcement learning where agents evolve complex survival strategies independently.</p>
+                    <a href="https://github.com/txfg" class="btn-link">Explore Code</a>
+                </div>
+                <div class="shape-icon">✦</div> </div>
 
-                <a href="https://github.com/txfg" class="project-item" style="text-decoration: none; color: white;">
-                    <div>
-                        <div class="project-title">Algorithmic Vision</div>
-                        <p style="opacity: 0.7; margin-top: 5px;">Real-time Object Detection</p>
-                    </div>
-                    <div class="project-tags">C++ / OpenCV / AI</div>
-                </a>
-
-                <a href="https://github.com/txfg" class="project-item" style="text-decoration: none; color: white;">
-                    <div>
-                        <div class="project-title">Data Synthesis</div>
-                        <p style="opacity: 0.7; margin-top: 5px;">Predictive Market Modeling</p>
-                    </div>
-                    <div class="project-tags">Python / Pandas / Big Data</div>
-                </a>
-
+            <div class="project-card">
+                <div class="project-info">
+                    <span class="project-tech">TensorFlow / Big Data</span>
+                    <h2>Predictive Synthesis</h2>
+                    <p style="margin-bottom: 20px; color: #444;">Analyzing massive datasets to predict non-linear market trends with high precision.</p>
+                    <a href="https://github.com/txfg" class="btn-link">Explore Code</a>
+                </div>
+                <div class="shape-icon">●</div>
             </div>
+
+            <div class="project-card">
+                <div class="project-info">
+                    <span class="project-tech">C++ / Computer Vision</span>
+                    <h2>The Machine Eye</h2>
+                    <p style="margin-bottom: 20px; color: #444;">Optimized object detection algorithms running in real-time on edge hardware.</p>
+                    <a href="https://github.com/txfg" class="btn-link">Explore Code</a>
+                </div>
+                <div class="shape-icon">▲</div>
+            </div>
+
         </section>
 
-        <section style="min-height: 50vh;">
-            <h2>Initiate Contact</h2>
-            <div style="margin-top: 20px;">
-                <a href="mailto:fernandocg@tamu.edu" class="social-link">Email</a>
-                <a href="https://github.com/txfg" class="social-link">GitHub</a>
-                <a href="#" class="social-link">LinkedIn</a>
-            </div>
-            <p style="margin-top: 100px; opacity: 0.5; font-size: 0.8rem;">
-                &copy; Fernando Guzman. Built with pure code.
-            </p>
-        </section>
+        <footer style="padding-bottom: 50px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
+            <a href="mailto:fernandocg@tamu.edu" class="btn-link" style="margin-right: 20px;">Email Me</a>
+            <a href="https://github.com/txfg" class="btn-link">GitHub</a>
+        </footer>
     </main>
 
     <script>
-        const canvas = document.getElementById('art-canvas');
+        const canvas = document.getElementById('fluid-canvas');
         const ctx = canvas.getContext('2d');
-        const cursor = document.getElementById('cursor');
-
+        
         let width, height;
-        let particles = [];
-        let hue = 0; // Starting color hue
+        let shapes = [];
+        
+        // CUSTOM PALETTE: Vibrant, artistic, "Unconfined"
+        // We use RGBA to allow blending
+        const colors = [
+            'rgba(255, 99, 71, 0.6)',   // Tomato Red
+            'rgba(65, 105, 225, 0.6)',  // Royal Blue
+            'rgba(255, 165, 0, 0.6)',   // Orange
+            'rgba(238, 130, 238, 0.6)', // Violet
+            'rgba(60, 179, 113, 0.6)'   // Sea Green
+        ];
 
-        // 1. Mouse Tracking with smoothing
-        let mouse = { x: 0, y: 0 };
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-            
-            // Move custom cursor
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-
-        // Hover effects for links (expand cursor)
-        document.querySelectorAll('a').forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                cursor.style.width = '50px';
-                cursor.style.height = '50px';
-                cursor.style.background = 'white';
-                cursor.style.mixBlendMode = 'difference';
-            });
-            link.addEventListener('mouseleave', () => {
-                cursor.style.width = '20px';
-                cursor.style.height = '20px';
-                cursor.style.background = 'transparent';
-            });
-        });
-
-        // 2. Setup Canvas
+        // Resize handler
         function resize() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
@@ -250,91 +225,97 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // 3. Particle System
-        class Particle {
+        // MOUSE PHYSICS
+        let mouse = { x: -1000, y: -1000 }; // Start off screen
+        window.addEventListener('mousemove', e => {
+            // Smoothly track mouse? No, let's just update position
+            // We'll use the distance in the shape update for "push"
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        class FluidShape {
             constructor() {
-                this.reset();
+                this.init();
             }
 
-            reset() {
+            init() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.size = Math.random() * 2 + 1;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 2 - 1;
-                this.life = 0;
-                this.maxLife = Math.random() * 100 + 50;
-                // Assign a color based on global hue but with variation
-                this.color = `hsl(${hue + Math.random()*60}, 70%, 50%)`;
+                // Large shapes for the "blob" effect
+                this.radius = Math.random() * 100 + 150; 
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Subtle natural movement
+                this.vx = (Math.random() - 0.5) * 1.5; 
+                this.vy = (Math.random() - 0.5) * 1.5;
             }
 
             update() {
-                // Movement
-                this.x += this.speedX;
-                this.y += this.speedY;
+                // 1. Natural Drift
+                this.x += this.vx;
+                this.y += this.vy;
 
-                // Mouse Interaction (The fluid effect)
+                // 2. Wall Bouncing (Soft)
+                if (this.x < -100 || this.x > width + 100) this.vx *= -1;
+                if (this.y < -100 || this.y > height + 100) this.vy *= -1;
+
+                // 3. Mouse Interaction (Gentle Push)
+                // Calculate distance to mouse
                 const dx = mouse.x - this.x;
                 const dy = mouse.y - this.y;
-                const distance = Math.sqrt(dx*dx + dy*dy);
-                
-                if (distance < 200) {
-                    const forceDirectionX = dx / distance;
-                    const forceDirectionY = dy / distance;
-                    const force = (200 - distance) / 200;
-                    // Push particles away gently
-                    this.speedX -= forceDirectionX * force * 0.5;
-                    this.speedY -= forceDirectionY * force * 0.5;
-                }
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const interactionRadius = 400;
 
-                // Friction to calm them down
-                this.speedX *= 0.99;
-                this.speedY *= 0.99;
-
-                this.life++;
-                if (this.life > this.maxLife || this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
-                    this.reset();
+                if (distance < interactionRadius) {
+                    // Create a vector pointing away from mouse
+                    const force = (interactionRadius - distance) / interactionRadius;
+                    const angle = Math.atan2(dy, dx);
+                    
+                    // Push the blob away slowly
+                    this.x -= Math.cos(angle) * force * 2;
+                    this.y -= Math.sin(angle) * force * 2;
                 }
             }
 
             draw() {
-                // Leave a trail by not clearing the canvas fully
-                ctx.fillStyle = this.color;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                // Draw circle
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
 
-        // Initialize particles
-        function init() {
-            particles = [];
-            for (let i = 0; i < 300; i++) {
-                particles.push(new Particle());
+        // Initialize Shapes
+        function initShapes() {
+            shapes = [];
+            // We don't need many shapes because they are huge
+            for (let i = 0; i < 12; i++) {
+                shapes.push(new FluidShape());
             }
         }
 
-        // 4. Animation Loop
+        // Animation Loop
         function animate() {
-            // This line creates the "Trails" effect. 
-            // Instead of clearing the screen, we paint a semi-transparent black layer.
-            // This makes old particles fade out slowly like paint.
-            ctx.fillStyle = 'rgba(5, 5, 5, 0.1)'; 
-            ctx.fillRect(0, 0, width, height);
-
-            // Cycle the global color hue over time
-            hue += 0.5; 
-
-            particles.forEach(p => {
-                p.update();
-                p.draw();
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Because we are using the CSS "blur" filter on the canvas element,
+            // we just need to draw simple circles here. The CSS does the 
+            // heavy lifting of making them look like liquid mercury/lava.
+            
+            shapes.forEach(shape => {
+                shape.update();
+                shape.draw();
             });
 
             requestAnimationFrame(animate);
         }
 
-        init();
+        initShapes();
         animate();
+
     </script>
 </body>
 </html>
