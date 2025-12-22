@@ -3,281 +3,338 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fernando Guzman | The Void</title>
+    <title>Fernando Guzman | Creative Technologist</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* --- CORE SETTINGS --- */
+        /* --- 1. BASE SETUP --- */
         :root {
-            --depth: 5000px; /* How deep the world goes */
-            --bg: #030303;
-            --accent: #00f3ff;
-            --secondary: #ff0055;
+            --text: #ffffff;
+            --overlay: rgba(0,0,0,0.4);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
-            margin: 0;
-            background-color: var(--bg);
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            overflow: hidden; /* We control the scroll manually */
-            height: 100vh;
-            width: 100vw;
-            user-select: none; /* Feel more like an app than a doc */
+            background: #050505;
+            color: var(--text);
+            font-family: 'Syne', sans-serif; /* Modern, wide sans-serif */
+            overflow-x: hidden;
+            cursor: none; /* We will use a custom artistic cursor */
         }
 
-        /* --- THE 3D STAGE --- */
-        #viewport {
-            perspective: 1000px; /* Creates the 3D effect */
-            height: 100vh;
-            width: 100vw;
+        /* --- 2. THE ART CANVAS --- */
+        #art-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #world {
-            transform-style: preserve-3d;
-            position: relative;
             width: 100%;
             height: 100%;
+            z-index: -1;
         }
 
-        /* --- ELEMENTS IN SPACE --- */
-        .item {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform-style: preserve-3d;
-            text-align: center;
-            opacity: 0; /* Hidden until JS fades them in */
-            transition: opacity 0.5s ease;
+        /* --- 3. CUSTOM CURSOR --- */
+        #cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference; /* Inverts colors over the background */
+            transition: width 0.3s, height 0.3s;
         }
 
-        /* --- TYPOGRAPHY & DESIGN --- */
+        /* --- 4. LAYOUT & TYPOGRAPHY --- */
+        main {
+            position: relative;
+            z-index: 2;
+            padding: 0 5%;
+        }
+
+        section {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
         h1 {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 6vw;
-            text-transform: uppercase;
-            letter-spacing: 10px;
-            color: transparent;
-            -webkit-text-stroke: 2px #fff;
-            margin: 0;
-            white-space: nowrap;
-        }
-        
-        h1 span {
-            color: var(--accent);
-            -webkit-text-stroke: 0;
-            text-shadow: 0 0 20px var(--accent);
+            font-family: 'Playfair Display', serif; /* Elegant serif */
+            font-size: clamp(4rem, 10vw, 8rem);
+            line-height: 0.9;
+            font-style: italic;
+            mix-blend-mode: overlay; /* Blends text into the colorful background */
+            opacity: 0.9;
         }
 
-        p {
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 40px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        p.bio {
             font-size: 1.5rem;
             max-width: 600px;
-            margin: 20px auto;
-            color: #aaa;
-            background: rgba(0,0,0,0.8);
-            padding: 10px;
-            border-left: 2px solid var(--secondary);
-        }
-
-        /* Project Cards in 3D */
-        .card {
-            width: 400px;
-            padding: 40px;
-            background: rgba(10, 10, 10, 0.9);
-            border: 1px solid #333;
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
-        }
-
-        .card h2 {
-            font-family: 'Syncopate', sans-serif;
-            color: var(--accent);
-            margin-bottom: 10px;
-        }
-
-        .card a {
-            display: inline-block;
+            line-height: 1.6;
             margin-top: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- 5. PROJECT CARDS (Clean & Functional) --- */
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .project-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .project-item:hover {
+            padding-left: 20px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .project-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .project-tags {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: #aaa;
+        }
+
+        /* --- 6. UTILITY LINKS --- */
+        .social-link {
+            font-size: 1.5rem;
             color: #fff;
             text-decoration: none;
-            border: 1px solid #fff;
-            padding: 10px 20px;
+            margin-right: 30px;
+            border-bottom: 1px solid transparent;
             transition: 0.3s;
         }
-        .card a:hover { background: var(--accent); border-color: var(--accent); color: #000; }
-
-        /* The Progress Bar */
-        #progress {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            font-family: 'Syncopate', sans-serif;
-            font-size: 12px;
-            color: var(--accent);
+        .social-link:hover {
+            border-bottom: 1px solid #fff;
+            font-style: italic;
         }
 
-        /* Floating particles */
-        .star {
-            position: absolute;
-            background: #fff;
-            border-radius: 50%;
-        }
-
-        /* Instructions */
-        .scroll-hint {
-            position: fixed;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1rem;
-            animation: pulse 2s infinite;
-            z-index: 100;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .project-item { flex-direction: column; align-items: flex-start; }
+            .project-tags { margin-top: 10px; }
+            #cursor { display: none; } /* Hide custom cursor on touch */
+            body { cursor: auto; }
         }
     </style>
 </head>
 <body>
 
-    <div class="scroll-hint">[ SCROLL TO ENTER ]</div>
-    <div id="progress">Z-POS: 0</div>
+    <canvas id="art-canvas"></canvas>
+    
+    <div id="cursor"></div>
 
-    <div id="viewport">
-        <div id="world">
-            
-            <div class="item" data-z="0">
-                <h1>Fernando<br><span>Guzman</span></h1>
-                <p>AI RESEARCHER // SIMULATION ARCHITECT</p>
+    <main>
+        <section>
+            <p style="text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;">Portfolio 2024</p>
+            <h1>Fernando<br>Guzman</h1>
+            <p class="bio">
+                Computer Science student crafting intelligence from code. 
+                Merging logic with <span style="font-style:italic;">aesthetic chaos</span>.
+            </p>
+        </section>
+
+        <section>
+            <h2>Selected Works</h2>
+            <div class="project-list">
+                
+                <a href="https://github.com/txfg" class="project-item" style="text-decoration: none; color: white;">
+                    <div>
+                        <div class="project-title">Neural Simulation</div>
+                        <p style="opacity: 0.7; margin-top: 5px;">Reinforcement Learning Environment</p>
+                    </div>
+                    <div class="project-tags">Python / TensorFlow / Math</div>
+                </a>
+
+                <a href="https://github.com/txfg" class="project-item" style="text-decoration: none; color: white;">
+                    <div>
+                        <div class="project-title">Algorithmic Vision</div>
+                        <p style="opacity: 0.7; margin-top: 5px;">Real-time Object Detection</p>
+                    </div>
+                    <div class="project-tags">C++ / OpenCV / AI</div>
+                </a>
+
+                <a href="https://github.com/txfg" class="project-item" style="text-decoration: none; color: white;">
+                    <div>
+                        <div class="project-title">Data Synthesis</div>
+                        <p style="opacity: 0.7; margin-top: 5px;">Predictive Market Modeling</p>
+                    </div>
+                    <div class="project-tags">Python / Pandas / Big Data</div>
+                </a>
+
             </div>
+        </section>
 
-            <div class="item" data-z="-1200" style="transform: translate(-50%, -50%) translateX(-300px);">
-                <div class="card">
-                    <h2>Core Systems</h2>
-                    <ul style="list-style: none; padding: 0; line-height: 2;">
-                        <li>>> Python / C++</li>
-                        <li>>> TensorFlow / PyTorch</li>
-                        <li>>> Generative Adversarial Networks</li>
-                        <li>>> Physics Simulations</li>
-                    </ul>
-                </div>
+        <section style="min-height: 50vh;">
+            <h2>Initiate Contact</h2>
+            <div style="margin-top: 20px;">
+                <a href="mailto:fernandocg@tamu.edu" class="social-link">Email</a>
+                <a href="https://github.com/txfg" class="social-link">GitHub</a>
+                <a href="#" class="social-link">LinkedIn</a>
             </div>
-
-            <div class="item" data-z="-2500" style="transform: translate(-50%, -50%) translateX(300px);">
-                <div class="card">
-                    <h2>Neural Sim</h2>
-                    <p>A custom reinforcement learning environment built from scratch to simulate emergent behavior in autonomous agents.</p>
-                    <a href="#">ACCESS TERMINAL</a>
-                </div>
-            </div>
-
-            <div class="item" data-z="-4000" style="transform: translate(-50%, -50%) translateX(-200px);">
-                <div class="card">
-                    <h2>Vision AI</h2>
-                    <p>Real-time computer vision algorithm designed for low-latency edge computing devices.</p>
-                    <a href="#">VIEW DATA</a>
-                </div>
-            </div>
-
-            <div class="item" data-z="-5500">
-                <h1>Let's<br><span>Build</span></h1>
-                <p>fernandocg@tamu.edu</p>
-                <a href="https://github.com/txfg" style="color:var(--accent); font-size: 2rem; text-decoration: none;">GITHUB_LINK</a>
-            </div>
-
-        </div>
-    </div>
+            <p style="margin-top: 100px; opacity: 0.5; font-size: 0.8rem;">
+                &copy; Fernando Guzman. Built with pure code.
+            </p>
+        </section>
+    </main>
 
     <script>
-        const world = document.getElementById('world');
-        const items = document.querySelectorAll('.item');
-        const progress = document.getElementById('progress');
-        
-        let zPosition = 0; // The camera's current Z position
-        let targetZ = 0;   // Where we want to go (for smooth scrolling)
-        const speed = 5;   // Scroll speed multiplier
-        const maxDepth = 6000; // How far the world goes
+        const canvas = document.getElementById('art-canvas');
+        const ctx = canvas.getContext('2d');
+        const cursor = document.getElementById('cursor');
 
-        // 1. Generate Stars (Space Dust)
-        for(let i=0; i<100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            const x = (Math.random() - 0.5) * 2000;
-            const y = (Math.random() - 0.5) * 2000;
-            const z = - Math.random() * maxDepth;
-            star.style.width = Math.random() * 3 + 'px';
-            star.style.height = star.style.width;
-            star.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
-            world.appendChild(star);
-        }
+        let width, height;
+        let particles = [];
+        let hue = 0; // Starting color hue
 
-        // 2. Handle Scroll (Updates targetZ)
-        window.addEventListener('wheel', (e) => {
-            targetZ += e.deltaY * speed;
+        // 1. Mouse Tracking with smoothing
+        let mouse = { x: 0, y: 0 };
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
             
-            // Clamp the scroll boundaries
-            targetZ = Math.max(0, Math.min(targetZ, maxDepth));
+            // Move custom cursor
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
         });
 
-        // 3. Animation Loop (The Physics Engine)
-        function animate() {
-            // Linear Interpolation (Lerp) for smoothness
-            // Moves zPosition 10% closer to targetZ every frame
-            zPosition += (targetZ - zPosition) * 0.05;
-
-            // Move the world
-            world.style.transform = `translateZ(${zPosition}px)`;
-
-            // Update items opacity based on distance to camera
-            items.forEach(item => {
-                const itemZ = parseInt(item.getAttribute('data-z'));
-                // The actual distance from the camera to the item
-                const distance = itemZ + zPosition; 
-                
-                // Logic: Fade in when approaching (-1000 to -200), Fade out when passed (> 200)
-                let opacity = 0;
-                
-                if (distance > -1500 && distance < 500) {
-                    opacity = 1 - Math.abs(distance + 500) / 1000;
-                    // Clamp opacity between 0 and 1
-                    opacity = Math.max(0, Math.min(1, opacity));
-                }
-                
-                item.style.opacity = opacity;
-                
-                // Add a slight rotation for style
-                if (Math.abs(distance) < 2000) {
-                   item.style.transform = `translate(-50%, -50%) translate3d(${item.style.transform.includes('translateX') ? item.style.transform.split('translateX(')[1].split(')')[0] : '0px'}, 0, ${itemZ}px) rotateY(${distance * 0.02}deg)`; 
-                } else {
-                    item.style.transform = `translate(-50%, -50%) translate3d(${item.style.transform.includes('translateX') ? item.style.transform.split('translateX(')[1].split(')')[0] : '0px'}, 0, ${itemZ}px)`; 
-                }
+        // Hover effects for links (expand cursor)
+        document.querySelectorAll('a').forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                cursor.style.width = '50px';
+                cursor.style.height = '50px';
+                cursor.style.background = 'white';
+                cursor.style.mixBlendMode = 'difference';
             });
+            link.addEventListener('mouseleave', () => {
+                cursor.style.width = '20px';
+                cursor.style.height = '20px';
+                cursor.style.background = 'transparent';
+            });
+        });
 
-            // Update UI
-            progress.innerText = `Z-POS: ${Math.round(zPosition)}`;
+        // 2. Setup Canvas
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // 3. Particle System
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.life = 0;
+                this.maxLife = Math.random() * 100 + 50;
+                // Assign a color based on global hue but with variation
+                this.color = `hsl(${hue + Math.random()*60}, 70%, 50%)`;
+            }
+
+            update() {
+                // Movement
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Mouse Interaction (The fluid effect)
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+                
+                if (distance < 200) {
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    const force = (200 - distance) / 200;
+                    // Push particles away gently
+                    this.speedX -= forceDirectionX * force * 0.5;
+                    this.speedY -= forceDirectionY * force * 0.5;
+                }
+
+                // Friction to calm them down
+                this.speedX *= 0.99;
+                this.speedY *= 0.99;
+
+                this.life++;
+                if (this.life > this.maxLife || this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                // Leave a trail by not clearing the canvas fully
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Initialize particles
+        function init() {
+            particles = [];
+            for (let i = 0; i < 300; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        // 4. Animation Loop
+        function animate() {
+            // This line creates the "Trails" effect. 
+            // Instead of clearing the screen, we paint a semi-transparent black layer.
+            // This makes old particles fade out slowly like paint.
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.1)'; 
+            ctx.fillRect(0, 0, width, height);
+
+            // Cycle the global color hue over time
+            hue += 0.5; 
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
 
             requestAnimationFrame(animate);
         }
 
+        init();
         animate();
-
-        // 4. Mouse Parallax (Tilts the world slightly)
-        window.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.clientX) / 50;
-            const y = (window.innerHeight / 2 - e.clientY) / 50;
-            document.getElementById('viewport').style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-        });
-
     </script>
 </body>
 </html>
