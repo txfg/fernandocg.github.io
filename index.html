@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fernando Guzman | Visual Intelligence</title>
     
+    <link rel="icon" href="favicon.png" type="image/png">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. THE CANVAS (The Art) --- */
         :root {
-            --bg-color: #f8f6f2; /* Creamy Art Paper */
+            --bg-color: #f8f6f2; 
             --text-main: #1a1a1a;
         }
 
@@ -31,12 +32,10 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            /* THE MAGIC: This blur blends the shapes into a fluid gradient */
             filter: blur(60px); 
             opacity: 0.8;
         }
 
-        /* --- 2. LAYOUT & UI --- */
         main {
             position: relative;
             z-index: 10;
@@ -45,7 +44,6 @@
             padding: 0 40px;
         }
 
-        /* Header Navigation */
         nav {
             display: flex;
             justify-content: space-between;
@@ -57,38 +55,60 @@
             text-transform: uppercase;
         }
 
-        /* Hero Section */
+        /* --- UPDATED HERO SECTION --- */
         .hero {
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            min-height: 80vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Split into two equal columns */
+            align-items: center;
+            gap: 50px; /* Space between text and video */
         }
 
         h1 {
-            font-size: clamp(4rem, 8vw, 7rem);
+            font-size: clamp(3.5rem, 6vw, 6rem); /* Slightly adjusted for layout */
             font-weight: 300;
-            line-height: 0.9;
+            line-height: 0.95;
             margin: 0;
-            mix-blend-mode: multiply; /* Text interacts with background colors */
+            mix-blend-mode: multiply;
         }
         
         .hero p {
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-top: 30px;
-            max-width: 500px;
+            max-width: 450px;
             line-height: 1.6;
         }
 
-        /* --- 3. PROJECT "SCULPTURES" --- */
-        .project-section {
-            padding: 100px 0;
+        /* Video Container Styling */
+        .video-container {
+            position: relative;
+            width: 100%;
+            border-radius: 20px;
+            overflow: hidden; /* Clips the video to the rounded corners */
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15); /* Soft shadow for depth */
+            transform: rotate(-2deg); /* Slight artistic tilt */
+            transition: transform 0.5s ease;
+            background: #ddd; /* Placeholder color while loading */
         }
+
+        .video-container:hover {
+            transform: rotate(0deg) scale(1.02); /* Straighten on hover */
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* --- PROJECT SECTION --- */
+        .project-section { padding: 100px 0; }
 
         .project-card {
             background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px); /* Frosted glass on light mode */
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.8);
             padding: 50px;
             margin-bottom: 60px;
@@ -133,17 +153,21 @@
         }
         .btn-link:hover { padding-bottom: 2px; border-bottom: 2px solid #000; }
 
-        /* Abstract geometric shape on right of card */
-        .shape-icon {
-            font-size: 4rem;
-            opacity: 0.2;
-        }
+        .shape-icon { font-size: 4rem; opacity: 0.2; }
 
-        @media (max-width: 768px) {
+        /* Responsive Fixes */
+        @media (max-width: 900px) {
+            .hero { 
+                grid-template-columns: 1fr; /* Stack vertically on mobile */
+                text-align: center;
+                gap: 30px;
+                padding-top: 40px;
+            }
+            .hero p { margin: 20px auto; }
+            .video-container { transform: rotate(0deg); }
             .project-card { flex-direction: column; align-items: flex-start; }
             .shape-icon { display: none; }
         }
-
     </style>
 </head>
 <body>
@@ -157,12 +181,20 @@
         </nav>
 
         <section class="hero">
-            <h1>Art in<br>Algorithms.</h1>
-            <p>I build computational systems that feel human. <br>Specializing in AI, Simulation, and Creative Code.</p>
+            <div class="hero-text">
+                <h1>Art in<br>Algorithms.</h1>
+                <p>I build computational systems that feel human. <br>Specializing in AI, Simulation, and Creative Code.</p>
+            </div>
+
+            <div class="video-container">
+                <video autoplay muted loop playsinline>
+                    <source src="demo.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
         </section>
 
         <section class="project-section">
-            
             <div class="project-card">
                 <div class="project-info">
                     <span class="project-tech">Python / Neural Networks</span>
@@ -170,7 +202,8 @@
                     <p style="margin-bottom: 20px; color: #444;">A study in reinforcement learning where agents evolve complex survival strategies independently.</p>
                     <a href="https://github.com/txfg" class="btn-link">Explore Code</a>
                 </div>
-                <div class="shape-icon">✦</div> </div>
+                <div class="shape-icon">✦</div>
+            </div>
 
             <div class="project-card">
                 <div class="project-info">
@@ -191,7 +224,6 @@
                 </div>
                 <div class="shape-icon">▲</div>
             </div>
-
         </section>
 
         <footer style="padding-bottom: 50px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
@@ -203,21 +235,18 @@
     <script>
         const canvas = document.getElementById('fluid-canvas');
         const ctx = canvas.getContext('2d');
-        
         let width, height;
         let shapes = [];
         
-        // CUSTOM PALETTE: Vibrant, artistic, "Unconfined"
-        // We use RGBA to allow blending
+        // VIBRANT PALETTE
         const colors = [
-            'rgba(255, 99, 71, 0.6)',   // Tomato Red
-            'rgba(65, 105, 225, 0.6)',  // Royal Blue
-            'rgba(255, 165, 0, 0.6)',   // Orange
-            'rgba(238, 130, 238, 0.6)', // Violet
-            'rgba(60, 179, 113, 0.6)'   // Sea Green
+            'rgba(255, 99, 71, 0.6)', 
+            'rgba(65, 105, 225, 0.6)', 
+            'rgba(255, 165, 0, 0.6)', 
+            'rgba(238, 130, 238, 0.6)', 
+            'rgba(60, 179, 113, 0.6)'
         ];
 
-        // Resize handler
         function resize() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
@@ -225,97 +254,59 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // MOUSE PHYSICS
-        let mouse = { x: -1000, y: -1000 }; // Start off screen
+        let mouse = { x: -1000, y: -1000 };
         window.addEventListener('mousemove', e => {
-            // Smoothly track mouse? No, let's just update position
-            // We'll use the distance in the shape update for "push"
             mouse.x = e.clientX;
             mouse.y = e.clientY;
         });
 
         class FluidShape {
-            constructor() {
-                this.init();
-            }
-
+            constructor() { this.init(); }
             init() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                // Large shapes for the "blob" effect
                 this.radius = Math.random() * 100 + 150; 
                 this.color = colors[Math.floor(Math.random() * colors.length)];
-                
-                // Subtle natural movement
                 this.vx = (Math.random() - 0.5) * 1.5; 
                 this.vy = (Math.random() - 0.5) * 1.5;
             }
-
             update() {
-                // 1. Natural Drift
                 this.x += this.vx;
                 this.y += this.vy;
-
-                // 2. Wall Bouncing (Soft)
                 if (this.x < -100 || this.x > width + 100) this.vx *= -1;
                 if (this.y < -100 || this.y > height + 100) this.vy *= -1;
-
-                // 3. Mouse Interaction (Gentle Push)
-                // Calculate distance to mouse
+                
                 const dx = mouse.x - this.x;
                 const dy = mouse.y - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const interactionRadius = 400;
-
-                if (distance < interactionRadius) {
-                    // Create a vector pointing away from mouse
-                    const force = (interactionRadius - distance) / interactionRadius;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 400) {
                     const angle = Math.atan2(dy, dx);
-                    
-                    // Push the blob away slowly
+                    const force = (400 - dist) / 400;
                     this.x -= Math.cos(angle) * force * 2;
                     this.y -= Math.sin(angle) * force * 2;
                 }
             }
-
             draw() {
                 ctx.beginPath();
                 ctx.fillStyle = this.color;
-                // Draw circle
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
 
-        // Initialize Shapes
         function initShapes() {
             shapes = [];
-            // We don't need many shapes because they are huge
-            for (let i = 0; i < 12; i++) {
-                shapes.push(new FluidShape());
-            }
+            for (let i = 0; i < 12; i++) shapes.push(new FluidShape());
         }
 
-        // Animation Loop
         function animate() {
-            // Clear canvas
             ctx.clearRect(0, 0, width, height);
-            
-            // Because we are using the CSS "blur" filter on the canvas element,
-            // we just need to draw simple circles here. The CSS does the 
-            // heavy lifting of making them look like liquid mercury/lava.
-            
-            shapes.forEach(shape => {
-                shape.update();
-                shape.draw();
-            });
-
+            shapes.forEach(shape => { shape.update(); shape.draw(); });
             requestAnimationFrame(animate);
         }
 
         initShapes();
         animate();
-
     </script>
 </body>
 </html>
