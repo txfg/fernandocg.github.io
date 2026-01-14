@@ -8,13 +8,28 @@
     <link rel="icon" href="favicon.png" type="image/png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@300;400&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
 
     <style>
+        /* --- THEME VARIABLES --- */
         :root {
             --bg-color: #f8f6f2; 
             --text-main: #1a1a1a;
-            --accent: #ff6b6b; /* A subtle coral color for the tentacle */
+            
+            /* DEFAULT: VIBRANT ORIGINAL PALETTE */
+            --accent: #ff6b6b; /* Coral */
+            --ink-color: rgba(255, 107, 107, 0.15); /* Reddish Ink */
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shine: rgba(255, 255, 255, 0.8);
+            --logo-filter: none; /* Full color logo by default */
+        }
+
+        /* INDIGO THEME OVERRIDES (Toggled via JS) */
+        body.indigo-mode {
+            --accent: #5e3aee; /* Deep Indigo */
+            --ink-color: rgba(94, 58, 238, 0.15); /* Purple Ink */
+            --logo-filter: grayscale(100%) brightness(0) opacity(0.8); /* Monochrome logo */
         }
 
         body {
@@ -24,6 +39,13 @@
             color: var(--text-main);
             font-family: 'Cormorant Garamond', serif;
             overflow-x: hidden;
+            transition: color 0.5s ease;
+        }
+
+        /* Selection color changes based on theme */
+        ::selection {
+            background: var(--accent);
+            color: #fff;
         }
 
         #fluid-canvas {
@@ -35,6 +57,13 @@
             z-index: -1;
             filter: blur(60px); 
             opacity: 0.8;
+            transition: filter 0.5s ease;
+        }
+
+        /* When in indigo mode, we increase blur for a smoother look */
+        body.indigo-mode #fluid-canvas {
+            filter: blur(80px);
+            opacity: 0.65;
         }
 
         main {
@@ -45,213 +74,280 @@
             padding: 0 40px;
         }
 
+        /* --- NAVIGATION --- */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 40px 0;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
         }
 
-        /* --- OCTOPUS MASCOT STYLES --- */
         .brand-container {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
         }
 
         .mascot-icon {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             object-fit: contain;
-            /* Animation: A gentle underwater float */
+            /* Filter controlled by CSS variable */
+            filter: var(--logo-filter);
+            transition: all 0.4s ease;
             animation: float 6s ease-in-out infinite;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
         }
 
-        .mascot-icon:hover {
-            /* Interaction: It perks up when hovered */
-            transform: scale(1.1) rotate(10deg);
+        /* Hover always brings back full color */
+        .brand-container:hover .mascot-icon {
+            filter: grayscale(0%) brightness(1) opacity(1);
+            transform: scale(1.1) rotate(5deg);
         }
 
         @keyframes float {
             0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(3deg); } /* Bobs up */
+            50% { transform: translateY(-8px) rotate(3deg); }
             100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.4;
         }
 
         /* --- HERO SECTION --- */
         .hero {
             min-height: 80vh;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1.2fr 1fr;
             align-items: center;
-            gap: 50px;
+            gap: 60px;
         }
 
         h1 {
-            font-size: clamp(3.5rem, 6vw, 6rem);
+            font-size: clamp(3.5rem, 6vw, 6.5rem);
             font-weight: 300;
-            line-height: 0.95;
+            line-height: 0.9;
             margin: 0;
-            mix-blend-mode: multiply;
+            letter-spacing: -0.02em;
+            color: #111;
         }
         
         .hero p {
             font-family: 'Montserrat', sans-serif;
-            font-size: 1.1rem;
-            margin-top: 30px;
-            max-width: 450px;
+            font-size: 1.15rem;
+            margin-top: 35px;
+            max-width: 480px;
             line-height: 1.6;
+            color: #333;
+            font-weight: 400;
         }
 
-        /* Video Container */
+        /* VIDEO CONTAINER */
         .video-container {
             position: relative;
             width: 100%;
-            border-radius: 20px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             transform: rotate(-2deg);
-            transition: transform 0.5s ease;
-            background: #ddd;
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            background: #000;
         }
 
         .video-container:hover {
             transform: rotate(0deg) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
         }
 
         video {
             width: 100%;
             height: auto;
             display: block;
-            object-fit: cover;
+            opacity: 0.9;
         }
 
-        /* --- PROJECT SECTION & ORGANIC INTERACTIONS --- */
-        .project-section { padding: 100px 0; }
+        /* SIMULATION HUD OVERLAY */
+        .sim-hud {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.8);
+            z-index: 2;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sim-hud span::before {
+            content: '>';
+            margin-right: 5px;
+            color: var(--accent); /* Changes color with theme */
+        }
+
+        /* --- PROJECT SECTION --- */
+        .project-section { padding: 120px 0; }
 
         .project-card {
-            position: relative; /* Essential for the ink effect */
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            padding: 50px;
-            margin-bottom: 60px;
-            border-radius: 20px; /* Clean, consistent rounded corners */
+            position: relative;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(12px) saturate(120%);
+            -webkit-backdrop-filter: blur(12px) saturate(120%);
+            border: 1px solid var(--glass-border);
+            padding: 55px;
+            margin-bottom: 50px;
+            border-radius: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-            overflow: hidden; /* Keeps the ink inside the box */
-            
-            /* Smooth transitions for the float effect */
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            overflow: hidden;
+            transition: all 0.4s ease;
         }
 
-        /* THE INK BLOT (Hidden by default) */
+        /* MOUSE FOLLOWING INK EFFECT */
         .project-card::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: var(--mouse-y, 50%);
+            left: var(--mouse-x, 50%);
             transform: translate(-50%, -50%);
             width: 0px;
             height: 0px;
-            background: radial-gradient(circle, rgba(255, 107, 107, 0.15) 0%, rgba(255,255,255,0) 70%);
+            /* Gradient uses CSS variable to swap colors */
+            background: radial-gradient(circle, var(--ink-color) 0%, transparent 60%);
             border-radius: 50%;
-            transition: width 0.8s ease, height 0.8s ease;
-            z-index: -1; /* Puts it behind the text */
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        /* HOVER STATE: Float + Ink Expansion */
         .project-card:hover {
-            /* 1. The Float: Lifts up and tilts slightly like it's in water */
-            transform: translateY(-10px) rotateX(2deg);
-            
-            /* 2. The Wet Look: Brightens the border and increases shadow */
-            border-color: rgba(255, 255, 255, 1);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08), inset 0 0 20px rgba(255,255,255,0.5);
+            transform: translateY(-5px);
+            border-color: var(--glass-shine);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.05);
         }
 
         .project-card:hover::before {
-            /* 3. The Ink: Expands to fill the card */
-            width: 800px;
-            height: 800px;
+            width: 1000px;
+            height: 1000px;
         }
 
         .project-info h2 {
             font-size: 2.5rem;
             margin: 0 0 15px 0;
             font-weight: 400;
+            color: #111;
         }
 
         .project-tech {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #555;
-            margin-bottom: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: #666;
+            margin-bottom: 15px;
             display: block;
+            opacity: 0.8;
         }
 
-        /* --- THE TENTACLE LINK (Wavy Underline) --- */
+        .project-desc {
+            margin-bottom: 25px;
+            color: #444;
+            max-width: 500px;
+            line-height: 1.5;
+        }
+
         .btn-link {
-            display: inline-block;
             text-decoration: none;
-            color: #1a1a1a;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.9rem;
-            padding-bottom: 8px;
-            position: relative;
-            overflow: hidden;
-            z-index: 2; /* Ensures link stays on top of ink */
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+            padding-bottom: 3px;
+            transition: all 0.3s ease;
         }
 
-        .btn-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 6px;
-            background: radial-gradient(circle, var(--text-main) 1px, transparent 1.5px) repeat-x bottom;
-            background-size: 10px 6px;
-            transition: transform 0.3s ease;
-        }
-
-        .btn-link:hover::after {
-            animation: swimWave 0.5s linear infinite;
-            background: radial-gradient(circle, var(--accent) 1px, transparent 1.5px) repeat-x bottom;
-            background-size: 10px 6px;
-        }
-
-        @keyframes swimWave {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-10px); }
+        .btn-link:hover {
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
         .shape-icon { 
-            font-size: 4rem; 
-            opacity: 0.2; 
-            transition: transform 0.5s ease;
+            font-size: 3rem; 
+            opacity: 0.1; 
+            filter: grayscale(100%);
+            transition: transform 0.5s ease, opacity 0.3s;
         }
         
-        /* Subtle movement for the icon on hover */
         .project-card:hover .shape-icon {
-            transform: rotate(15deg) scale(1.1);
-            opacity: 0.4;
+            transform: rotate(10deg) scale(1.1);
+            opacity: 0.3;
+        }
+
+        /* --- THE TOGGLE SWITCH --- */
+        .theme-toggle-container {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .theme-toggle-container:hover { opacity: 1; }
+
+        .toggle-switch {
+            width: 40px;
+            height: 20px;
+            background: #ccc;
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Toggle Active State */
+        .toggle-active .toggle-switch {
+            background: #5e3aee;
+        }
+
+        .toggle-active .toggle-switch::after {
+            transform: translateX(20px);
         }
 
         @media (max-width: 900px) {
             .hero { grid-template-columns: 1fr; text-align: center; padding-top: 40px; }
+            .hero p { margin: 30px auto; }
+            .video-container { transform: rotate(0deg); margin-top: 30px; }
             .project-card { flex-direction: column; align-items: flex-start; }
-            .shape-icon { display: none; }
+            .shape-icon { position: absolute; top: 20px; right: 20px; font-size: 2rem; }
+            .theme-toggle-container { bottom: 20px; right: 20px; }
         }
     </style>
 </head>
@@ -259,17 +355,23 @@
 
     <canvas id="fluid-canvas"></canvas>
 
+    <div class="theme-toggle-container" id="themeToggle">
+        <span>VIBRANT</span>
+        <div class="toggle-switch"></div>
+        <span>INDIGO</span>
+    </div>
+
     <main>
         <nav>
             <div class="brand-container">
                 <img src="octopus.png" alt="Octopus Logo" class="mascot-icon">
-                <div>
-                    <span style="display:block;">Fernando Guzman</span>
-                    <span style="font-size: 0.7em; opacity: 0.6; display:block;">Based in TX</span>
+                <div class="brand-text">
+                    <span style="font-weight: 500;">Fernando Guzman</span>
+                    <span style="font-size: 0.7em; opacity: 0.5;">Based in TX</span>
                 </div>
             </div>
             
-            <a href="mailto:fernandocg@tamu.edu" class="btn-link">Say Hello</a>
+            <a href="mailto:fernandocg@tamu.edu" class="btn-link">SAY_HELLO()</a>
         </nav>
 
         <section class="hero">
@@ -279,6 +381,12 @@
             </div>
 
             <div class="video-container">
+                <div class="sim-hud">
+                    <span>SIM_STATUS: RUNNING</span>
+                    <span>FPS: 60.0</span>
+                    <span>EPOCH: 4096</span>
+                </div>
+
                 <video autoplay muted loop playsinline>
                     <source src="demo.mp4" type="video/mp4">
                     Your browser does not support the video tag.
@@ -287,51 +395,49 @@
         </section>
 
         <section class="project-section">
-            
             <div class="project-card">
                 <div class="project-info">
-                    <span class="project-tech">Python / Gymnasium</span>
+                    <span class="project-tech">PYTHON // GYMNASIUM</span>
                     <h2>Emergent Behavior Sim</h2>
-                    <p style="margin-bottom: 20px; color: #444;">A study in reinforcement learning where agents evolve competitive strategies independently.</p>
-                    <a href="https://github.com/txfg/tron-ultra-heuristic-agent" class="btn-link">Explore Code</a>
+                    <p class="project-desc">A study in reinforcement learning where agents evolve competitive strategies independently in a constrained environment.</p>
+                    <a href="https://github.com/txfg/tron-ultra-heuristic-agent" class="btn-link">EXPLORE_CODE -></a>
                 </div>
                 <div class="shape-icon">⚓︎</div> 
             </div>
 
             <div class="project-card">
                 <div class="project-info">
-                    <span class="project-tech">Python / API</span>
+                    <span class="project-tech">PYTHON // API // LLM</span>
                     <h2>Mobile QA Agent</h2>
-                    <p style="margin-bottom: 20px; color: #444;">Empowering LLMs to test and debug mobile apps in the Android ecosystem.</p>
-                    <a href="https://github.com/txfg/qualgentintern" class="btn-link">Explore Code</a>
+                    <p class="project-desc">Empowering LLMs to autonomously test and debug mobile applications within the Android ecosystem.</p>
+                    <a href="https://github.com/txfg/qualgentintern" class="btn-link">EXPLORE_CODE -></a>
                 </div>
                 <div class="shape-icon">𓇼</div>
             </div>
 
             <div class="project-card">
                 <div class="project-info">
-                    <span class="project-tech">C++ / Computer Vision</span>
+                    <span class="project-tech">C++ // COMPUTER VISION</span>
                     <h2>Face Mask</h2>
-                    <p style="margin-bottom: 20px; color: #444;">Bridged Google Vision Kit to real-time face landmark detection on iOS apps.</p>
-                    <a href="https://github.com/txfg/puppets" class="btn-link">Explore Code</a>
+                    <p class="project-desc">Bridged Google Vision Kit to real-time face landmark detection for high-performance iOS filters.</p>
+                    <a href="https://github.com/txfg/puppets" class="btn-link">EXPLORE_CODE -></a>
                 </div>
                 <div class="shape-icon">𓆝</div>
             </div>
 
             <div class="project-card">
                 <div class="project-info">
-                    <span class="project-tech">Python / CNNs</span>
+                    <span class="project-tech">PYTHON // CNNs // FLUIDS</span>
                     <h2>ShockCast Expansion</h2>
-                    <p style="margin-bottom: 20px; color: #444;">Researching Mixture of Experts applications on ShockCast fluid flow modeling.</p>
-                    <a href="https://github.com/txfg" class="btn-link">Explore Code</a>
+                    <p class="project-desc">Researching Mixture of Experts applications on ShockCast fluid flow modeling to reduce compute load.</p>
+                    <a href="https://github.com/txfg" class="btn-link">EXPLORE_CODE -></a>
                 </div>
                 <div class="shape-icon">𓅬</div>
             </div>
-
         </section>
 
-        <footer style="padding-bottom: 50px; font-family: 'Montserrat', sans-serif; font-size: 0.9rem;">
-            <p>&copy; 2024 Fernando Guzman</p>
+        <footer style="padding-bottom: 50px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; opacity: 0.5;">
+            <p>&copy; 2026 Fernando Guzman // Visual Intelligence</p>
         </footer>
     </main>
 
@@ -341,14 +447,28 @@
         let width, height;
         let shapes = [];
         
-        // VIBRANT PALETTE
-        const colors = [
-            'rgba(255, 99, 71, 0.6)', 
-            'rgba(65, 105, 225, 0.6)', 
-            'rgba(255, 165, 0, 0.6)', 
-            'rgba(238, 130, 238, 0.6)', 
-            'rgba(60, 179, 113, 0.6)'
+        // --- 1. DEFINING THE TWO PALETTES ---
+        
+        // Your Original Vibrant Colors
+        const vibrantColors = [
+            'rgba(255, 99, 71, 0.6)',   // Tomato
+            'rgba(65, 105, 225, 0.6)',  // Royal Blue
+            'rgba(255, 165, 0, 0.6)',   // Orange
+            'rgba(238, 130, 238, 0.6)', // Violet
+            'rgba(60, 179, 113, 0.6)'   // Medium Sea Green
         ];
+
+        // The Clean/Research Indigo Colors
+        const indigoColors = [
+            'rgba(94, 58, 238, 0.4)',   // Deep Violet
+            'rgba(123, 104, 238, 0.4)', // Medium Slate Blue
+            'rgba(72, 61, 139, 0.4)',   // Dark Slate Blue
+            'rgba(147, 112, 219, 0.4)', // Medium Purple
+            'rgba(100, 149, 237, 0.4)'  // Cornflower Blue
+        ];
+
+        // Start with Vibrant
+        let currentPalette = vibrantColors;
 
         function resize() {
             width = canvas.width = window.innerWidth;
@@ -361,6 +481,15 @@
         window.addEventListener('mousemove', e => {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
+            
+            // Pass mouse coordinates to CSS
+            document.querySelectorAll('.project-card').forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
         });
 
         class FluidShape {
@@ -368,10 +497,11 @@
             init() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.radius = Math.random() * 100 + 150; 
-                this.color = colors[Math.floor(Math.random() * colors.length)];
-                this.vx = (Math.random() - 0.5) * 1.5; 
-                this.vy = (Math.random() - 0.5) * 1.5;
+                this.radius = Math.random() * 120 + 100;
+                // Assign color from current active palette
+                this.color = currentPalette[Math.floor(Math.random() * currentPalette.length)];
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = (Math.random() - 0.5) * 0.8;
             }
             update() {
                 this.x += this.vx;
@@ -382,11 +512,11 @@
                 const dx = mouse.x - this.x;
                 const dy = mouse.y - this.y;
                 const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 400) {
+                if (dist < 300) {
                     const angle = Math.atan2(dy, dx);
-                    const force = (400 - dist) / 400;
-                    this.x -= Math.cos(angle) * force * 2;
-                    this.y -= Math.sin(angle) * force * 2;
+                    const force = (300 - dist) / 300;
+                    this.x -= Math.cos(angle) * force * 1.5;
+                    this.y -= Math.sin(angle) * force * 1.5;
                 }
             }
             draw() {
@@ -399,7 +529,7 @@
 
         function initShapes() {
             shapes = [];
-            for (let i = 0; i < 12; i++) shapes.push(new FluidShape());
+            for (let i = 0; i < 15; i++) shapes.push(new FluidShape());
         }
 
         function animate() {
@@ -410,8 +540,26 @@
 
         initShapes();
         animate();
+
+        // --- 2. TOGGLE LOGIC ---
+        const toggleBtn = document.getElementById('themeToggle');
+        
+        toggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('indigo-mode');
+            toggleBtn.classList.toggle('toggle-active');
+
+            // Switch the palette array
+            if (document.body.classList.contains('indigo-mode')) {
+                currentPalette = indigoColors;
+            } else {
+                currentPalette = vibrantColors;
+            }
+
+            // Immediately update existing shapes to new colors
+            shapes.forEach(shape => {
+                shape.color = currentPalette[Math.floor(Math.random() * currentPalette.length)];
+            });
+        });
     </script>
 </body>
 </html>
-
-
