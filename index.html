@@ -14,7 +14,7 @@
     <style>
         /* --- THEME VARIABLES --- */
         :root {
-            --bg-color: #f8f6f2; 
+            --bg-color: #faf8f5; /* Warm white */
             --text-main: #1a1a1a;
             
             /* DEFAULT: VIBRANT ORIGINAL PALETTE */
@@ -48,28 +48,33 @@
             color: #fff;
         }
 
+        /* Hide the global canvas - we'll draw inside cards instead */
         #fluid-canvas {
-            position: fixed;
+            display: none;
+        }
+
+        /* Card-specific canvas for the blur effect */
+        .card-canvas {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            filter: blur(60px); 
+            z-index: 0;
+            filter: blur(40px);
             opacity: 0.8;
-            transition: filter 0.5s ease;
+            pointer-events: none;
         }
 
-        /* When in indigo mode, we increase blur for a smoother look */
-        body.indigo-mode #fluid-canvas {
-            filter: blur(80px);
-            opacity: 0.65;
+        body.indigo-mode .card-canvas {
+            filter: blur(50px);
+            opacity: 0.7;
         }
 
         main {
             position: relative;
             z-index: 10;
-            max-width: 1200px;
+            max-width: 1140px;
             margin: auto;
             padding: 0 40px;
         }
@@ -122,13 +127,115 @@
 
         /* --- HERO SECTION --- */
         .hero {
-            min-height: 80vh;
+            position: relative;
+            min-height: 55vh;
             display: grid;
             grid-template-columns: 1.2fr 1fr;
             align-items: center;
             gap: 60px;
         }
+        /* --- ANIMATED TRACE LINES --- */
+        .hero-lines-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            overflow: visible;
+        }
 
+        .hero-lines {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .trace-line {
+            fill: none;
+            stroke-linecap: round;
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+        }
+
+        /* 1. ORANGE (Generic/Default) 
+        Static width: 6px
+        Draw Duration: 12s
+        Draw Delay: 0.5s
+        Therefore -> Pulsate must start at: 12.5s (12 + 0.5)
+        */
+        .trace-line.orange {
+            stroke: #e07830;
+            stroke-width: 6; /* Matches PulsateOrange start */
+            
+            animation: 
+                traceLine 12s ease-out forwards, 
+                pulsateOrange 30s ease-in-out infinite;
+                
+            /* Delay logic: Wait 0.5s to draw. Wait 12.5s to pulsate */
+            animation-delay: 0.5s, 12.5s; 
+        }
+
+        /* 2. BLUE 
+        Static width: 5px
+        Draw Duration: 12s
+        Draw Delay: 1.5s
+        Therefore -> Pulsate must start at: 13.5s (12 + 1.5)
+        */
+        .trace-line.blue {
+            stroke: #3a7bc2;
+            stroke-width: 5; /* Matches PulsateBlue start */
+            
+            animation: 
+                traceLine 12s ease-out forwards, 
+                pulsateBlue 8s ease-in-out infinite;
+                
+            /* Delay logic: Wait 1.5s to draw. Wait 13.5s to pulsate */
+            animation-delay: 1.5s, 13.5s;
+        }
+
+        /* Glow filters */
+        .glow-orange { filter: url(#glow-orange); }
+        .glow-blue   { filter: url(#glow-blue); }
+
+        /* --- KEYFRAMES --- */
+
+        @keyframes traceLine {
+            0% {
+                stroke-dashoffset: 2000;
+                opacity: 0.5;
+            }
+            100% {
+                stroke-dashoffset: 0;
+                /* CHANGED: Ends at 0.25 to match the start of pulsate */
+                opacity: 0.25; 
+            }
+        }
+
+        /* Specific Pulsate for Orange (Base Width 6) */
+        @keyframes pulsateOrange {
+            0%, 100% {
+                opacity: 0.25;   /* Matches traceLine End */
+                stroke-width: 6; /* Matches static .orange width */
+            }
+            50% {
+                opacity: 0.45;
+                stroke-width: 7.5;
+            }
+        }
+
+        /* Specific Pulsate for Blue (Base Width 5) */
+        @keyframes pulsateBlue {
+            0%, 100% {
+                opacity: 0.25;   /* Matches traceLine End */
+                stroke-width: 5; /* Matches static .blue width */
+            }
+            50% {
+                opacity: 0.40;
+                stroke-width: 6.5;
+            }
+}
         h1 {
             font-size: clamp(3.5rem, 6vw, 6.5rem);
             font-weight: 300;
@@ -195,13 +302,11 @@
         }
 
         /* --- PROJECT SECTION --- */
-        .project-section { padding: 120px 0; }
+        .project-section { padding: 60px 0 120px 0; }
 
         .project-card {
             position: relative;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(12px) saturate(120%);
-            -webkit-backdrop-filter: blur(12px) saturate(120%);
+            background: rgba(255, 255, 255, 0.75);
             border: 1px solid var(--glass-border);
             padding: 55px;
             margin-bottom: 50px;
@@ -212,6 +317,12 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.02);
             overflow: hidden;
             transition: all 0.4s ease;
+        }
+
+        .project-card .project-info,
+        .project-card .shape-icon {
+            position: relative;
+            z-index: 2;
         }
 
         /* MOUSE FOLLOWING INK EFFECT */
@@ -355,6 +466,52 @@
 
     <canvas id="fluid-canvas"></canvas>
 
+    <!-- Animated trace lines - behind all content -->
+    <div class="hero-lines-container">
+        <svg class="hero-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+                <!-- Orange glow filter -->
+                <filter id="glow-orange" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+                    <feColorMatrix in="blur" type="matrix"
+                        values="1.5 0 0 0 0.3
+                                0 0.6 0 0 0.1
+                                0 0 0.3 0 0
+                                0 0 0 1.2 0" result="glow"/>
+                    <feMerge>
+                        <feMergeNode in="glow"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+                <!-- Blue glow filter -->
+                <filter id="glow-blue" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur"/>
+                    <feColorMatrix in="blur" type="matrix"
+                        values="0.3 0 0 0 0
+                                0 0.5 0 0 0.1
+                                0 0 1.5 0 0.3
+                                0 0 0 1.2 0" result="glow"/>
+                    <feMerge>
+                        <feMergeNode in="glow"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <!-- Orange line from left edge, curving smoothly across and off right -->
+            <path class="trace-line orange glow-orange"
+                d="M -15 65
+                   C 5 60, 15 30, 35 35
+                   S 55 55, 75 40
+                   Q 90 30, 115 45"/>
+            <!-- Blue line from bottom right, curving up and off left -->
+            <path class="trace-line blue glow-blue"
+                d="M 115 80
+                   C 95 70, 80 50, 60 55
+                   S 35 40, 20 50
+                   Q 5 55, -15 35"/>
+        </svg>
+    </div>
+
     <div class="theme-toggle-container" id="themeToggle">
         <span>VIBRANT</span>
         <div class="toggle-switch"></div>
@@ -442,47 +599,113 @@
     </main>
 
     <script>
-        const canvas = document.getElementById('fluid-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let shapes = [];
-        
-        // --- 1. DEFINING THE TWO PALETTES ---
-        
-        // Your Original Vibrant Colors
+        // --- COLOR PALETTES ---
         const vibrantColors = [
-            'rgba(255, 99, 71, 0.6)',   // Tomato
-            'rgba(65, 105, 225, 0.6)',  // Royal Blue
-            'rgba(255, 165, 0, 0.6)',   // Orange
-            'rgba(238, 130, 238, 0.6)', // Violet
-            'rgba(60, 179, 113, 0.6)'   // Medium Sea Green
+            'rgba(255, 99, 71, 0.7)',   // Tomato
+            'rgba(65, 105, 225, 0.7)',  // Royal Blue
+            'rgba(255, 165, 0, 0.7)',   // Orange
+            'rgba(238, 130, 238, 0.7)', // Violet
+            'rgba(60, 179, 113, 0.7)'   // Medium Sea Green
         ];
 
-        // The Clean/Research Indigo Colors
         const indigoColors = [
-            'rgba(94, 58, 238, 0.4)',   // Deep Violet
-            'rgba(123, 104, 238, 0.4)', // Medium Slate Blue
-            'rgba(72, 61, 139, 0.4)',   // Dark Slate Blue
-            'rgba(147, 112, 219, 0.4)', // Medium Purple
-            'rgba(100, 149, 237, 0.4)'  // Cornflower Blue
+            'rgba(94, 58, 238, 0.5)',   // Deep Violet
+            'rgba(123, 104, 238, 0.5)', // Medium Slate Blue
+            'rgba(72, 61, 139, 0.5)',   // Dark Slate Blue
+            'rgba(147, 112, 219, 0.5)', // Medium Purple
+            'rgba(100, 149, 237, 0.5)'  // Cornflower Blue
         ];
 
-        // Start with Vibrant
         let currentPalette = vibrantColors;
 
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        // --- CARD CANVAS SYSTEM ---
+        class CardCanvas {
+            constructor(card) {
+                this.card = card;
+                this.canvas = document.createElement('canvas');
+                this.canvas.className = 'card-canvas';
+                this.ctx = this.canvas.getContext('2d');
+                this.shapes = [];
 
-        let mouse = { x: -1000, y: -1000 };
+                // Insert canvas as first child
+                card.insertBefore(this.canvas, card.firstChild);
+
+                this.resize();
+                this.initShapes();
+
+                // Observe resize
+                this.resizeObserver = new ResizeObserver(() => this.resize());
+                this.resizeObserver.observe(card);
+            }
+
+            resize() {
+                const rect = this.card.getBoundingClientRect();
+                this.width = this.canvas.width = rect.width;
+                this.height = this.canvas.height = rect.height;
+            }
+
+            initShapes() {
+                this.shapes = [];
+                // 5-7 shapes per card
+                const count = 5 + Math.floor(Math.random() * 3);
+                for (let i = 0; i < count; i++) {
+                    this.shapes.push({
+                        x: Math.random() * this.width,
+                        y: Math.random() * this.height,
+                        radius: Math.random() * 100 + 100,
+                        color: currentPalette[Math.floor(Math.random() * currentPalette.length)],
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5
+                    });
+                }
+            }
+
+            updateColors() {
+                this.shapes.forEach(shape => {
+                    shape.color = currentPalette[Math.floor(Math.random() * currentPalette.length)];
+                });
+            }
+
+            update() {
+                this.shapes.forEach(shape => {
+                    shape.x += shape.vx;
+                    shape.y += shape.vy;
+
+                    // Bounce off edges
+                    if (shape.x < -50 || shape.x > this.width + 50) shape.vx *= -1;
+                    if (shape.y < -50 || shape.y > this.height + 50) shape.vy *= -1;
+                });
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.width, this.height);
+                this.shapes.forEach(shape => {
+                    this.ctx.beginPath();
+                    this.ctx.fillStyle = shape.color;
+                    this.ctx.arc(shape.x, shape.y, shape.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+            }
+        }
+
+        // Initialize canvases for all project cards
+        const cardCanvases = [];
+        document.querySelectorAll('.project-card').forEach(card => {
+            cardCanvases.push(new CardCanvas(card));
+        });
+
+        // Animation loop
+        function animate() {
+            cardCanvases.forEach(cc => {
+                cc.update();
+                cc.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Mouse tracking for ink effect
         window.addEventListener('mousemove', e => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-            
-            // Pass mouse coordinates to CSS
             document.querySelectorAll('.project-card').forEach(card => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -492,73 +715,21 @@
             });
         });
 
-        class FluidShape {
-            constructor() { this.init(); }
-            init() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.radius = Math.random() * 120 + 100;
-                // Assign color from current active palette
-                this.color = currentPalette[Math.floor(Math.random() * currentPalette.length)];
-                this.vx = (Math.random() - 0.5) * 0.8;
-                this.vy = (Math.random() - 0.5) * 0.8;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < -100 || this.x > width + 100) this.vx *= -1;
-                if (this.y < -100 || this.y > height + 100) this.vy *= -1;
-                
-                const dx = mouse.x - this.x;
-                const dy = mouse.y - this.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 300) {
-                    const angle = Math.atan2(dy, dx);
-                    const force = (300 - dist) / 300;
-                    this.x -= Math.cos(angle) * force * 1.5;
-                    this.y -= Math.sin(angle) * force * 1.5;
-                }
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.fillStyle = this.color;
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function initShapes() {
-            shapes = [];
-            for (let i = 0; i < 15; i++) shapes.push(new FluidShape());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            shapes.forEach(shape => { shape.update(); shape.draw(); });
-            requestAnimationFrame(animate);
-        }
-
-        initShapes();
-        animate();
-
-        // --- 2. TOGGLE LOGIC ---
+        // --- TOGGLE LOGIC ---
         const toggleBtn = document.getElementById('themeToggle');
-        
+
         toggleBtn.addEventListener('click', () => {
             document.body.classList.toggle('indigo-mode');
             toggleBtn.classList.toggle('toggle-active');
 
-            // Switch the palette array
             if (document.body.classList.contains('indigo-mode')) {
                 currentPalette = indigoColors;
             } else {
                 currentPalette = vibrantColors;
             }
 
-            // Immediately update existing shapes to new colors
-            shapes.forEach(shape => {
-                shape.color = currentPalette[Math.floor(Math.random() * currentPalette.length)];
-            });
+            // Update all card canvases
+            cardCanvases.forEach(cc => cc.updateColors());
         });
     </script>
 </body>
